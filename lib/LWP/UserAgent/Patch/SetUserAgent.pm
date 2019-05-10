@@ -27,14 +27,9 @@ sub patch_data {
             },
         },
         patches => [
-            #{
-            #    action => 'replace',
-            #    sub_name => '_agent',
-            #    code => $p_agent,
-            #},
             {
                 action => 'replace',
-                sub_name => 'agent',
+                sub_name => '_agent',
                 code => $p_agent,
             },
         ],
@@ -53,13 +48,25 @@ In Perl:
 From command-line:
 
  % perl -MLWP::UserAgent::Patch::SetUserAgent=-agent,'Blah/1.0' script-that-uses-lwp.pl ...
+ % HTTP_USER_AGENT=Blah/1.0 perl -MLWP::UserAgent::Patch::SetUserAgent script-that-uses-lwp.pl ...
 
 
 =head1 DESCRIPTION
 
-This patch makes L<LWP::UserAgent> set User-Agent HTTP request header to a fixed
-value either from L</-agent> configuration or from environment variable
-L</HTTP_USER_AGENT>.
+This patch sets L<LWP::UserAgent>'s default User-Agent string, from
+C<libwww-perl/XXX> to a value from either L</-agent> configuration or from
+environment variable L</HTTP_USER_AGENT>.
+
+You can still override it using the usual:
+
+ my $ua = LWP::UserAgent->new(
+     agent => '...',
+     ...
+ );
+
+or
+
+ $ua->agent('...');
 
 
 =head1 CONFIGURATION
@@ -78,7 +85,7 @@ String. Used to set default for L</-agent> configuration.
 
 =head1 SEE ALSO
 
-If you want to check the sent User-Agent header, you can use
+If you want to check the sent User-Agent header in requests, you can use
 L<Log::ger::For::LWP>.
 
 =cut
